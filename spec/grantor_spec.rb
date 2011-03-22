@@ -19,22 +19,4 @@ describe Grant::Grantor do
     end
   end
 
-  describe '#error' do
-    it 'should raise a nicely formatted error detailing the user and model objects' do
-      user = OpenStruct.new(:id => 1)
-      model = OpenStruct.new(:id => 2)
-      action = :create
-
-      begin
-        Grant::Grantor.new(:create).error(user, action, model)
-      rescue => ex
-        ex.message.should include("#{user.class.name}:#{user.id}")
-        ex.message.should include("#{model.class.name}:#{model.id}")
-        ex.message.should include(action.to_s)
-      else
-        fail "should have received an exception"
-      end
-    end
-  end
-
 end
