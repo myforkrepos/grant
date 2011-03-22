@@ -1,3 +1,5 @@
 coverage
 rdoc
 grant-*.gem
+tmp/
+pkg/

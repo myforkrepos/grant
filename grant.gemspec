@@ -1,7 +1,5 @@
 # -*- encoding: utf-8 -*-
-lib = File.expand_path('../lib/', __FILE__)
-$:.unshift lib unless $:.include?(lib)
- 
+$:.push File.expand_path("../lib", __FILE__)
 require 'grant/version'
  
 Gem::Specification.new do |s|
@@ -13,12 +11,13 @@ Gem::Specification.new do |s|
   s.summary     = "Conscious security constraints for your ActiveRecord model objects"
   s.description = "Grant is a Ruby gem and Rails plugin that forces you to make explicit security decisions about the operations performed on your ActiveRecord models."
   s.license     = "MIT"
- 
-  s.required_rubygems_version = ">= 1.3.6"
- 
-  s.add_development_dependency "rspec"
- 
-  s.files        = Dir.glob("{lib}/**/*") + %w(LICENSE README.rdoc)
-  s.test_files   = Dir.glob("{spec}/**/*")
-  s.require_path = 'lib'
+
+  s.files         = `git ls-files`.split("\n")
+  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  s.require_paths = ["lib"]
+
+  s.add_development_dependency('rspec', '2.5.0')
+  s.add_development_dependency('sqlite3-ruby', '1.3.3')
+  s.add_development_dependency('activerecord', '> 3.0.0')
 end

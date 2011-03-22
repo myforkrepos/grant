@@ -26,7 +26,10 @@ Lastly, Grant can also be installed as a Rails plugin
 
 = Setup
 
-Grant needs to know who the current user is, but with no standard for doing so you'll have to do a little work to set things up. You simply need to set your current user model object as the Grant current user before any CRUD operations are performed. For example, in a Rails application you could add the following to your application_controller.rb
+Grant needs to know who the current user is, but with no standard for
+doing so you'll have to do a little work to set things up unless your
+ApplicationController exposes a current_user method. If you don't
+have a current_user method in ApplicationController, you simply need to set your current user model object as the Grant current user before any CRUD operations are performed. For example, in a Rails application you could add the following to your application_controller.rb
 
   class ApplicationController < ActionController::Base
     before_filter :set_current_user
@@ -38,14 +41,16 @@ Grant needs to know who the current user is, but with no standard for doing so y
     end
   end
 
+The above is essentially what Grant does if you have a current_user
+method in ApplicationController.
+
 = Usage
 
-To enable model security you simply include the Grant::ModelSecurity module in your model class. In the example below you see two grant statements. The first grants find (aka read) permission all the time. The second example grants create, update, and destroy permission when the passed block evaluates to true, which in this case happens when the model is editable by the current user. A Grant::Error is raised if any grant block evaluates to false or nil.
+To enable grant you simply start calling the grant method.
+Grant will initialize itself on the first invocation of the grant method
+in a class. In the example below you see two grant statements. The first grants find (aka read) permission all the time. The second example grants create, update, and destroy permission when the passed block evaluates to true, which in this case happens when the model is editable by the current user. A Grant::Error is raised if any grant block evaluates to false or nil.
 
   class Book < ActiveRecord::Base
-    include Grant::ModelSecurity
-    
-    has_many :tags
     grant(:find) { true }
     grant(:create, :update, :destroy) { |user, model| model.editable_by_user? user }
     
@@ -58,10 +63,12 @@ The valid actions to pass to a grant statement are :find, :create, :update, and 
 
 = Integration
 
-There may be some instances where you need to perform an action on your model object without Grant stepping in and stopping you. In those cases you can include the Grant::Integration module for help.
+There may be some instances where you need to perform an action on your
+model object without Grant stepping in and stopping you. In those cases
+you can include the Grant::Status module for help.
 
   class BooksController < ApplicationController
-    include Grant::Integration
+    include Grant::Status
     
     def update
       book = Book.find(params[:id])
@@ -69,4 +76,4 @@ There may be some instances where you need to perform an action on your model ob
     end
   end
 
-Copyright (c) 2010 Near Infinity Corporation, released under the MIT license
+Copyright (c) 2011 Near Infinity Corporation, released under the MIT license

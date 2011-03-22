@@ -1,49 +1,7 @@
-require 'grant/thread_status'
-
+# TODO: Remove this file when backwards compatibility with grant 2.0.0
+# is no longer necessary
 module Grant
   module Integration
-    
-    def without_grant
-      previously_disabled = grant_disabled?
-      disable_grant
-      
-      begin
-        result = yield if block_given?
-      ensure
-        enable_grant unless previously_disabled
-      end
-      
-      result
-    end
-    
-    def with_grant
-      previously_disabled = grant_disabled?
-      enable_grant
-      
-      begin
-        result = yield if block_given?
-      ensure
-        disable_grant if previously_disabled
-      end
-      
-      result
-    end
-    
-    def disable_grant
-      Grant::ThreadStatus.disable
-    end
-    
-    def enable_grant
-      Grant::ThreadStatus.enable
-    end
-    
-    def grant_disabled?
-      Grant::ThreadStatus.disabled?
-    end
-    
-    def grant_enabled?
-      Grant::ThreadStatus.enabled?
-    end
-    
+    include Status
   end
 end

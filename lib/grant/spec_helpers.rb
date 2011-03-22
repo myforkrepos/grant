@@ -1,21 +1,21 @@
-require 'grant/integration'
+require 'grant/status'
 
 module Grant
   module SpecHelpers
-    include Grant::Integration
-  
+    include Grant::Status
+
     def self.included(base)
       base.class_eval do
         before(:each) do
           disable_grant
         end
-      
+
         after(:each) do
           enable_grant
         end
       end
     end
-    
+
   end
 end
 
