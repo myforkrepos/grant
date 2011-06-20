@@ -17,6 +17,21 @@ describe Grant::Grantor do
     it 'should define a before_destroy callback method when passed destroy as an argument' do
       Grant::Grantor.new(:destroy).should respond_to(:before_destroy)
     end
+    it 'should pass the user, model, and action to the supplied callback block' do
+      grantor = Grant::Grantor.new(:update)
+      model = Object.new
+      user = Object.new
+      Grant::User.current_user = user
+
+      grantor.callback = Proc.new do |user, model, action|
+        user.should == user
+        model.should == model
+        action.should == :update
+        true
+      end
+
+      grantor.before_update
+    end
   end
 
 end
