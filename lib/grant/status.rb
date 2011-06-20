@@ -56,5 +56,6 @@ module Grant
       result
     end
 
+    module_function :grant_enabled?, :grant_disabled?, :disable_grant, :enable_grant, :without_grant, :with_grant, :do_as
   end
 end

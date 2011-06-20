@@ -10,7 +10,11 @@ module Grant
     def initialize(action)
       self.class.send(:define_method, "#{action == :find ? 'after' : 'before'}_#{action}") do |model|
         user = Grant::User.current_user
-        raise Grant::Error.new(user, action, model) unless grant_disabled? || (@callback != nil && @callback.call(user, model, action))
+        unless grant_disabled?
+          without_grant do
+            raise Grant::Error.new(user, action, model) unless (@callback != nil && @callback.call(user, model, action))
+          end
+        end
       end
     end
   end
