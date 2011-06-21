@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    grant (2.0.1)
+    grant (2.1.0)
 
 GEM
   remote: http://rubygems.org/
