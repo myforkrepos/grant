@@ -12,10 +12,12 @@ Gem::Specification.new do |s|
   s.description = "Grant is a Ruby gem and Rails plugin that forces you to make explicit security decisions about the operations performed on your ActiveRecord models."
   s.license     = "MIT"
 
-  s.files         = `git ls-files`.split("\n")
+  s.files         = `git ls-files`.split("\n").reject { |path| path =~ /^(Gemfile|.gitignore|Rakefile)/ }
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
+
+  s.add_dependency('activerecord', '> 3.0.0')
 
   s.add_development_dependency('rspec', '2.5.0')
   s.add_development_dependency('sqlite3-ruby', '1.3.3')

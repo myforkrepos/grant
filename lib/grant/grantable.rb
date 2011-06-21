@@ -6,36 +6,34 @@ module Grant
   module Grantable
 
     def self.included(base)
-      base.extend(ClassMethods)
+      base.send :extend, ClassMethods
     end
 
     module ClassMethods
       def grant(*args, &blk)
-        include Grant::Status unless self.included_modules.include?(Grant::Status)
-        initialize_grant unless grant_initialized?
+        unless self.included_modules.include?(InstanceMethods)
+          include InstanceMethods
+          include Grant::Status
 
-        config = Grant::Config.new(*args)
-        config.actions.each do |action|
-          @grant_callbacks[action.to_sym].callback = blk
+          [:find, :create, :update, :destroy].each do |action|
+            send :class_attribute, "grantor_#{action}".to_sym
+            send "grantor_#{action}=".to_sym, Grant::Grantor.new(action) { false }
+            send "#{action == :find ? 'after' : 'before'}_#{action}".to_sym, "grant_#{action}".to_sym
+          end
         end
-      end
 
-      def initialize_grant
-        @grant_callbacks ||= {}
-        Grant::Config.valid_actions.each do |action|
-          grantor = Grant::Grantor.new(action)
-          @grant_callbacks[action] = grantor
-          send "#{action == :find ? 'after' : 'before'}_#{action}", grantor
+        Grant::Config.new(*args).actions.each do |action|
+          send "grantor_#{action}=".to_sym, Grant::Grantor.new(action, &blk)
         end
-        @grant_initialized = true
-      end
-
-      def grant_initialized?
-        @grant_initialized == true
       end
     end
 
-    # ActiveRecord won't call the after_find handler unless it see's a specific after_find method defined
-    def after_find; end unless method_defined?(:after_find)
+    module InstanceMethods
+      def grant_find; grantor_find.authorize!(self); end
+      def grant_create; grantor_create.authorize!(self); end
+      def grant_update; grantor_update.authorize!(self); end
+      def grant_destroy; grantor_destroy.authorize!(self); end
+    end
+
   end
 end

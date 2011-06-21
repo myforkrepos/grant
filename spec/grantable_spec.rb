@@ -22,20 +22,13 @@ describe Grant::Grantable do
     Model.included_modules.should include(Grant::Status)
   end
 
-  it 'should setup failing Grant::Grantor objects for create, find, update, and destroy callbacks when initialized' do
+  it 'should setup failing callbacks when initialized' do
     m = Model.create
-    Model.initialize_grant
+    Model.instance_eval { grant(:create) { false } }
     lambda { Model.create }.should raise_error(Grant::Error)
     lambda { Model.find(m.id) }.should raise_error(Grant::Error)
     lambda { m.update_attributes(:name => 'new') }.should raise_error(Grant::Error)
     lambda { m.destroy }.should raise_error(Grant::Error)
-  end
-
-  it 'should indicate whether Grant has been initialized' do
-    redefine_model
-    Model.should_not be_grant_initialized
-    Model.initialize_grant
-    Model.should be_grant_initialized
   end
 
   it 'should associate callbacks with active record create, find, update, and destroy callbacks' do
@@ -75,16 +68,42 @@ describe Grant::Grantable do
     lambda { Model.create }.should raise_error(Grant::Error)
   end
 
-  it 'should provide callbacks with the user and model being protected' do
+  it 'should provide callbacks with the user, model, and action being protected' do
     redefine_model do
-      grant(:create) do |user, model|
+      grant(:create) do |user, model, action|
         user.should == Grant::User.current_user
         model.should_not == nil
+        action.should == :create
         true
       end
     end
 
     Model.create
+  end
+
+  it 'should allow subclasses to independenty redefine grant statements' do
+    redefine_model do
+      grant(:create) { true }
+      grant(:find) { true }
+      grant(:update) { false }
+      grant(:destroy) { true }
+    end
+
+    class SubModel < Model
+      set_table_name 'models'
+      grant(:update) { true }
+      grant(:destroy) { false }
+    end
+
+    m = SubModel.create
+    m = SubModel.find(m.id)
+    m.update_attributes(:name => 'new')
+    lambda { m.destroy }.should raise_error(Grant::Error)
+
+    m = Model.create
+    m = Model.find(m.id)
+    lambda { m.update_attributes(:name => 'new') }.should raise_error(Grant::Error)
+    m.destroy
   end
 
   def redefine_model(&blk)
