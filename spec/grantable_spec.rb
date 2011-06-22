@@ -106,6 +106,47 @@ describe Grant::Grantable do
     m.destroy
   end
 
+  describe '#granted?' do
+    it 'should allow invoking the grant callbacks to determine whether an action has been granted' do
+      redefine_model do
+        grant(:create) { true }
+        grant(:find) { true }
+        grant(:update) { false }
+        grant(:destroy) { false }
+      end
+
+      model = Model.new
+      model.granted?(:create).should be_true
+      model.granted?(:find).should be_true
+      model.granted?(:update).should be_false
+      model.granted?(:destroy).should be_false
+    end
+
+    it 'should allow a non-current user to be specified' do
+      user = User.create
+
+      redefine_model do
+        grant(:create) do |u, m, a|
+          u.should == user
+          Grant::User.current_user.should_not == user
+        end
+      end
+
+      model = Model.new
+      model.granted?(:create, user)
+    end
+
+    it 'should not raise an error if the action has not been granted' do
+      redefine_model do
+        grant(:create) { false }
+      end
+
+      model = Model.new
+      lambda { model.granted?(:create) }.should_not raise_error
+      model.granted?(:create).should be_false
+    end
+  end
+
   def redefine_model(&blk)
     clazz = Class.new(ActiveRecord::Base, &blk)
     Object.send :remove_const, 'Model'

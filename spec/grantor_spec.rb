@@ -30,4 +30,30 @@ describe Grant::Grantor do
     end
   end
 
+  describe '#authorized?' do
+    it 'should pass the user, model, and action to the supplied callback block' do
+      model = Object.new
+      user = Object.new
+      Grant::User.current_user = user
+
+      grantor = Grant::Grantor.new(:update) do |u, m, a|
+        u.should == user
+        m.should == model
+        a.should == :update
+        true
+      end
+
+      grantor.authorized?(model).should be_true
+    end
+
+    it 'should turn off grant when calling the supplied callback block' do
+      grantor = Grant::Grantor.new(:destroy) do |user, model, action|
+        Grant::Status.grant_disabled?.should be_true
+        false
+      end
+
+      grantor.authorized?(Object.new).should be_false
+    end
+  end
+
 end

@@ -33,6 +33,11 @@ module Grant
       def grant_create; grantor_create.authorize!(self); end
       def grant_update; grantor_update.authorize!(self); end
       def grant_destroy; grantor_destroy.authorize!(self); end
+
+      def granted?(action, user=Grant::User.current_user)
+        grantor = send("grantor_#{action}")
+        grantor.authorized?(self, user)
+      end
     end
 
   end

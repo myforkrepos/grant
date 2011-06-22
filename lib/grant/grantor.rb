@@ -10,12 +10,17 @@ module Grant
       @callback = callback
     end
 
-    def authorize!(model)
-      user = Grant::User.current_user
+    def authorize!(model, user=Grant::User.current_user)
       unless grant_disabled?
         without_grant do
           raise Grant::Error.new(user, @action, model) unless @callback.call(user, model, @action)
         end
+      end
+    end
+
+    def authorized?(model, user=Grant::User.current_user)
+      without_grant do
+        @callback.call(user, model, @action)
       end
     end
   end
