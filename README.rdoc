@@ -11,17 +11,17 @@ Additional information beyond that found in this README is available on the wiki
 To install the Grant gem, simply run
 
   gem install grant
-  
+
 To use it with a Rails 3 project or other project using Bundler, add the following line to your Gemfile
 
   gem 'grant'
-  
+
 For your Rails 2.x project, add the following to your environment.rb file
 
   config.gem 'grant'
 
 Lastly, Grant can also be installed as a Rails plugin
-  
+
   script/plugin install git://github.com/nearinfinity/grant.git
 
 = Setup
@@ -52,7 +52,7 @@ in a class. In the example below you see two grant statements. The first grants 
 
   class Book < ActiveRecord::Base
     grant(:find) { true }
-    grant(:create, :update, :destroy) { |user, model| model.editable_by_user? user }
+    grant(:create, :update, :destroy) { |user, model, action| model.editable_by_user? user }
     
     def editable_by_user? user
       user.administrator? || user.has_role?(:editor) 
@@ -60,6 +60,37 @@ in a class. In the example below you see two grant statements. The first grants 
   end
 
 The valid actions to pass to a grant statement are :find, :create, :update, and :destroy. Each action can be passed as a Symbol or String. Any number of actions can be passed to a single grant statement, which is very useful if each of the actions share the same logic for determining access.
+
+If you'd like to find out if a certain action is granted without attempting
+the action and having Grant potentially raise an error, you can use the 
+`granted?` method.
+
+  book = Book.first
+  book.granted?(:destroy, some_user)
+
+If you don't pass a user as the second argument to `granted?`, the 
+`Grant::User.current_user` will be assumed.
+
+= Inheritance
+
+Subclasses inherit all the `grant` statements defined on their parent, but 
+are free to override any of them individually simply by redefining them. 
+For example:
+
+  class Book < ActiveRecord::Base
+    self.abstract_class = true
+    grant(:create, :find, :destroy) { true }
+    grant(:update) { false }
+  end
+
+  class Ebook < ActiveRecord::Base
+    grant(:update) { true }
+    grant(:destroy) { false }
+  end
+
+Instances of the parent class `Book` can always be created, found, and destroyed,
+but never updated. However, `Ebook` instances can be created, found, and updated,
+but never destroyed.
 
 = Integration
 
