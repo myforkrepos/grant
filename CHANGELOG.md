@@ -1,6 +1,7 @@
 ## 2.1.0 (July 5, 2011)
 
 Features:
+
   - Pass action to grant decision block. [#5](https://github.com/nearinfinity/grant/issues/5)
   - Allow subclasses to redefine grant statements. [#4](https://github.com/nearinfinity/grant/issues/4)
   - Allow checking of grant status without raising an error. [#3](https://github.com/nearinfinity/grant/issues/3)
