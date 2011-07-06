@@ -107,4 +107,8 @@ you can include the Grant::Status module for help.
     end
   end
 
-Copyright (c) 2011 Near Infinity Corporation, released under the MIT license
+= License
+
+Grant is released under the MIT license.
+
+Copyright (c) 2011 Near Infinity. http://www.nearinfinity.com
