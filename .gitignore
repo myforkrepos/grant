@@ -3,3 +3,6 @@ rdoc
 grant-*.gem
 tmp/
 pkg/
+
+.bundle
+bundler_stubs

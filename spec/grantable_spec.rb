@@ -90,7 +90,7 @@ describe Grant::Grantable do
     end
 
     class SubModel < Model
-      set_table_name 'models'
+      self.table_name = 'models'
       grant(:update) { true }
       grant(:destroy) { false }
     end
