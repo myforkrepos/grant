@@ -43,7 +43,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord (> 4.0.0)
   grant!
   rspec (= 2.5.0)
   sqlite3 (= 1.3.9)

@@ -21,5 +21,4 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency('rspec', '2.5.0')
   s.add_development_dependency('sqlite3', '1.3.9')
-  s.add_development_dependency('activerecord', '> 4.0.0')
 end
