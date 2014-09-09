@@ -1,6 +1,7 @@
 module Grant
   module User
 
+    @@user = nil
     def current_user
       @@user
     end
