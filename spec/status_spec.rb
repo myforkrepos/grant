@@ -2,6 +2,10 @@ require File.dirname(__FILE__) + '/spec_helper'
 require 'grant/status'
 
 describe Grant::Status do
+  it "should be enabled by default" do
+    Grant::Status.grant_enabled?.should be_true  
+  end
+
   it "should be enabled if set to enabled" do
     obj = Class.new do
       include Grant::Status

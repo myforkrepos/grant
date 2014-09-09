@@ -1,20 +1,22 @@
 module Grant
   module Status
 
+    @@grant_disabled = false
+
     def grant_disabled?
-      Thread.current[:grant_disabled] == true
+      @@grant_disabled == true
     end
 
     def grant_enabled?
-      Thread.current[:grant_disabled] == false
+      @@grant_disabled == false
     end
 
     def disable_grant
-      Thread.current[:grant_disabled] = true
+      @@grant_disabled = true
     end
 
     def enable_grant
-      Thread.current[:grant_disabled] = false
+      @@grant_disabled = false
     end
 
     def without_grant
