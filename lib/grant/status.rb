@@ -10,12 +10,10 @@ module Grant
     end
 
     def disable_grant
-      puts "Disable Grant"
       Thread.current[:grant_disabled] = true
     end
 
     def enable_grant
-      puts "Enable Grant"
       Thread.current[:grant_disabled] = false
     end
 
