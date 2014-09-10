@@ -2,24 +2,20 @@ module Grant
   module Status
 
     def grant_disabled?
-      puts "Grant Disabled?"
       Thread.current[:grant_disabled] == true
     end
 
     def grant_enabled?
-      puts "Grant enabled?"
       Thread.current[:grant_disabled] == false
     end
 
     def disable_grant
       puts "Disable Grant"
-      puts Thread.current.backtrace.join("\n")
       Thread.current[:grant_disabled] = true
     end
 
     def enable_grant
       puts "Enable Grant"
-      puts Thread.current.backtrace.join("\n")
       Thread.current[:grant_disabled] = false
     end
 
