@@ -2,7 +2,7 @@ module Grant
   module User
 
     def current_user
-      puts "Current user: #{Thread.current[:grant_user].inspect}"
+      puts "Current user getter: #{Thread.current[:grant_user].inspect}"
       Thread.current[:grant_user]
     end
 
