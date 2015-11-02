@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = Grant::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Jeff Kunkle", "Matt Wizeman"]
-  s.homepage    = "http://github.com/nearinfinity/grant"
+  s.homepage    = "http://github.com/AnalyticsMediaGroup/grant"
   s.summary     = "Conscious security constraints for your ActiveRecord model objects"
   s.description = "Grant is a Ruby gem and Rails plugin that forces you to make explicit security decisions about the operations performed on your ActiveRecord models."
   s.license     = "MIT"
