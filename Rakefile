@@ -1,7 +1,7 @@
 $:.unshift File.expand_path("../lib", __FILE__)
 
 require 'rake'
-require 'rake/rdoctask'
+require 'rdoc/task'
 require 'rspec/core/rake_task'
 require 'bundler'
 
